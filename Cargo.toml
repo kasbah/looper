@@ -1,0 +1,7 @@
+[package]
+name = "looper"
+version = "0.1.0"
+authors = ["Kaspar Emanuel <kaspar.emanuel@gmail.com>"]
+
+[dependencies]
+jack = { git = "https://github.com/RustAudio/rust-jack.git" }
