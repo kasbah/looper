@@ -2,6 +2,11 @@ extern crate jack;
 use jack::prelude as j;
 use std::io;
 
+fn run(in_a_p: &j::AudioInPort, in_b_p: &j::AudioInPort, out_a_p: &mut j::AudioOutPort , out_b_p: &mut j::AudioOutPort) {
+    out_a_p.clone_from_slice(&in_a_p);
+    out_b_p.clone_from_slice(&in_b_p);
+}
+
 struct Process {
     in_a: j::Port<j::AudioInSpec>,
     in_b: j::Port<j::AudioInSpec>,
@@ -15,8 +20,7 @@ impl Process {
         let mut out_b_p = j::AudioOutPort::new(&mut self.out_b, ps);
         let in_a_p = j::AudioInPort::new(&self.in_a, ps);
         let in_b_p = j::AudioInPort::new(&self.in_b, ps);
-        out_a_p.clone_from_slice(&in_a_p);
-        out_b_p.clone_from_slice(&in_b_p);
+        run(&in_a_p, &in_b_p, &mut out_a_p, &mut out_b_p);
         j::JackControl::Continue
     }
 }
