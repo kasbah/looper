@@ -2,6 +2,11 @@ extern crate jack;
 use jack::prelude as j;
 use std::io;
 
+fn run(in_a_p: &j::AudioInPort, in_b_p: &j::AudioInPort, out_a_p: &mut j::AudioOutPort , out_b_p: &mut j::AudioOutPort) {
+    out_a_p.clone_from_slice(&in_a_p);
+    out_b_p.clone_from_slice(&in_b_p);
+}
+
 fn main() {
     // Create client
     let (client, _status) = j::Client::new("rust_jack_simple", j::client_options::NO_START_SERVER)
@@ -18,8 +23,7 @@ fn main() {
         let mut out_b_p = j::AudioOutPort::new(&mut out_b, ps);
         let in_a_p = j::AudioInPort::new(&in_a, ps);
         let in_b_p = j::AudioInPort::new(&in_b, ps);
-        out_a_p.clone_from_slice(&in_a_p);
-        out_b_p.clone_from_slice(&in_b_p);
+        run(&in_a_p, &in_b_p, &mut out_a_p, &mut out_b_p);
         j::JackControl::Continue
     };
     let process = j::ClosureProcessHandler::new(process_callback);
