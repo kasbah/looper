@@ -3,8 +3,12 @@ use jack::prelude as j;
 use std::io;
 
 fn run(in_a_p: &j::AudioInPort, in_b_p: &j::AudioInPort, out_a_p: &mut j::AudioOutPort , out_b_p: &mut j::AudioOutPort) {
-    out_a_p.clone_from_slice(&in_a_p);
-    out_b_p.clone_from_slice(&in_b_p);
+    let mut amplified_a : Vec<f32> = in_a_p.to_vec();
+    let mut amplified_b : Vec<f32> = in_b_p.to_vec();
+    amplified_a = amplified_a.iter().map(|x| x + (x * 0.2)).collect();
+    amplified_b = amplified_b.iter().map(|x| x + (x * 0.2)).collect();
+    out_a_p.clone_from_slice(&amplified_a);
+    out_b_p.clone_from_slice(&amplified_b);
 }
 
 fn main() {
