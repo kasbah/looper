@@ -12,7 +12,7 @@ struct Looper {
     loop_: Vec<f32>,
     thru: f32,
     state: LooperState,
-    cursor: i32,
+    cursor: usize,
 }
 
 impl Looper {
@@ -32,8 +32,26 @@ impl Looper {
         out_a_p.clone_from_slice(&amplified_a);
         out_b_p.clone_from_slice(&amplified_b);
     }
-    fn run(&self, n_frames: j::JackFrames, in_a_p: &j::AudioInPort, in_b_p: &j::AudioInPort, out_a_p: &mut j::AudioOutPort, out_b_p: &mut j::AudioOutPort) {
-        self.run_thru(&in_a_p, &in_b_p, out_a_p, out_b_p);
+    fn advance(&mut self, n_frames: j::JackFrames) {
+        let new_cursor = self.cursor + n_frames as usize;
+        let length = self.loop_.len();
+        if new_cursor >= length {
+            self.cursor = new_cursor - length;
+        } else {
+            self.cursor = new_cursor;
+        }
+    }
+    fn run(&mut self, n_frames: j::JackFrames, in_a_p: &j::AudioInPort, in_b_p: &j::AudioInPort, out_a_p: &mut j::AudioOutPort, out_b_p: &mut j::AudioOutPort) {
+        match self.state {
+            LooperState::Paused => {
+            }
+            LooperState::Playing => {
+                self.advance(n_frames);
+            }
+            LooperState::Recording => {
+            }
+        }
+        self.run_thru(&in_a_p, &in_b_p,  out_a_p,  out_b_p);
     }
 }
 
