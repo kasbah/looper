@@ -1,7 +1,7 @@
 extern crate jack;
 use jack::prelude as j;
 
-enum LooperState {
+pub enum LooperState {
     Paused,
     Playing,
     Recording,
@@ -9,9 +9,9 @@ enum LooperState {
 
 pub struct Looper {
     loop_  : Vec<f32>,
-    thru   : f32,
-    state  : LooperState,
     cursor : usize,
+    pub thru  : f32,
+    pub state : LooperState,
 }
 
 impl Looper {

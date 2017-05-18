@@ -1,7 +1,7 @@
 extern crate jack;
 use jack::prelude as j;
 
-use std::io;
+use std::io::{self, Read};
 
 mod looper;
 use looper::*;
@@ -37,9 +37,30 @@ fn main() {
     let active_client = j::AsyncClient::new(client, (), process).unwrap();
 
     // Wait for user input to quit
-    println!("Press enter/return to quit...");
-    let mut user_input = String::new();
-    io::stdin().read_line(&mut user_input).ok();
+    println!("Enter 'q' to quit...");
+    loop {
+        let mut user_input = String::new();
+        io::stdin().read_line(&mut user_input).ok();
+        match user_input.as_ref() {
+            "q\n" => {
+                println!("exiting");
+                break;
+            },
+            "p\n" => {
+                println!("pausing");
+                looper.state = LooperState::Paused
+            },
+            "r\n" => {
+                println!("recording");
+                looper.state = LooperState::Recording
+            },
+            "c\n" => {
+                println!("playing");
+                looper.state = LooperState::Playing
+            },
+            _ => {},
+        }
+    }
 
     active_client.deactivate().unwrap();
 }
